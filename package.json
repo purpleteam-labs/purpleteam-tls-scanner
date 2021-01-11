@@ -1,0 +1,73 @@
+{
+  "name": "purpleteam-tls-checker",
+  "version": "",
+  "description": "TLS checking component of purpleteam -- security regression testing SaaS",
+  "main": "index.js",
+  "bin": {},
+  "scripts": {
+    "lint": "eslint .",
+    "deps": "npm-check",
+    "update:deps": "npm-check -u",
+    "test": "lab --assert @hapi/code --coverage",
+    "test:coveralls": "lab --assert @hapi/code --reporter lcov -o ./coverage/lcov.info",
+    "test:nolint": "lab --assert @hapi/code --coverage",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/lab --assert @hapi/code --timeout 0",
+    "pretest": "npm run lint",
+    "debug": "node --inspect-brk ./index.js",
+    "start": "node ./index.js"
+  },
+  "pre-commit": [
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purpleteam-labs/purpleteam-tls-checker.git"
+  },
+  "keywords": [
+    "agile",
+    "application security",
+    "bdd",
+    "behaviour driven development",
+    "blue team",
+    "ci",
+    "cloud security",
+    "continuous deployment",
+    "continuous integration",
+    "cybersecurity",
+    "dev sec ops",
+    "red team",
+    "security",
+    "selenium",
+    "infosec",
+    "information security",
+    "tools",
+    "devsecops",
+    "devops",
+    "dev ops",
+    "purpleteam",
+    "owasp",
+    "penetration testing",
+    "purpleteam",
+    "security",
+    "security regression testing",
+    "software security",
+    "web application security",
+    "web security"
+  ],
+  "author": "Kim Carter",
+  "license": "AGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/purpleteam-labs/purpleteam/issues"
+  },
+  "homepage": "https://purpleteam-labs.com",
+  "dependencies": {},
+  "devDependencies": {
+    "@hapi/code": "^8.0.2",
+    "@hapi/lab": "^24.1.0",
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "npm-check": "^5.9.2",
+    "pre-commit": "^1.2.2"
+  }
+}
