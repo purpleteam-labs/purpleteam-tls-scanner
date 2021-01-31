@@ -1,6 +1,6 @@
 {
   "name": "purpleteam-tls-checker",
-  "version": "",
+  "version": "0.1.0-alpha.0",
   "description": "TLS checking component of purpleteam -- security regression testing SaaS",
   "main": "index.js",
   "bin": {},
