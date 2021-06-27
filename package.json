@@ -1,7 +1,7 @@
 {
-  "name": "purpleteam-tls-checker",
+  "name": "purpleteam-tls-scanner",
   "version": "0.1.0-alpha.0",
-  "description": "TLS checking component of purpleteam -- security regression testing SaaS",
+  "description": "TLS scanning component of purpleteam -- security regression testing SaaS",
   "main": "index.js",
   "bin": {},
   "scripts": {
@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/purpleteam-labs/purpleteam-tls-checker.git"
+    "url": "git+https://github.com/purpleteam-labs/purpleteam-tls-scanner.git"
   },
   "keywords": [
     "agile",
@@ -69,5 +69,6 @@
     "eslint-plugin-import": "^2.22.1",
     "npm-check": "^5.9.2",
     "pre-commit": "^1.2.2"
-  }
+  },
+  "files": []
 }
