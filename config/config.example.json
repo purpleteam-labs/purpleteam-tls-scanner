@@ -1,0 +1,20 @@
+{
+  "logger": {
+    "level": "debug"
+  },
+  "host": {
+    "host": "172.25.0.140"
+  },
+  "emissary": {
+    "report": {
+      "dir": "/var/log/purpleteam/outcomes/"
+    }
+  },
+  "cucumber": {
+    "tagExpression": "@tls_scan",
+    "timeout": 1800000
+  },
+  "results": {
+    "dir": "/var/log/purpleteam/outcomes/"
+  }
+}

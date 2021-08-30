@@ -18,10 +18,12 @@ module.exports = {
     'import/no-unresolved': ['error', { commonjs: true }],
     'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
     'object-curly-newline': ['error', { multiline: true }],
-    'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 1 }]
+    'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 1 }],
+    'newline-per-chained-call': 'off'
   },
   env: { node: true },
   parserOptions: { ecmaVersion: 2021 },
+  parser: 'babel-eslint', // required for private class members as eslint only supports ECMA Stage 4, will be able to remove in the future
   settings: {
     'import/resolver': {
       node: {

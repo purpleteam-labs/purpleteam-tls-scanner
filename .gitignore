@@ -4,9 +4,6 @@ config.*.json
 !config.test.json
 
 .vscode
-*.code-workspace
-logs
+# avajs
+.nyc_output
 coverage/
-
-
-
