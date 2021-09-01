@@ -61,8 +61,7 @@ Before(() => {
 });
 */
 
-Given('a new TLS Test Session based on the Build User supplied tlsScanner resourceObject', async function () {
-});
+Given('a new TLS Test Session based on the Build User supplied tlsScanner resourceObject', function () {}); // eslint-disable-line prefer-arrow-callback
 
 Given('the TLS Emissary is run with arguments', async function () {
   const { testSession: { id: testSessionId, attributes: { tlsScannerSeverity } } } = this.sut.getProperties(['testSession']);

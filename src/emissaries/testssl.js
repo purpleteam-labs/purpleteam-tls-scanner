@@ -46,14 +46,6 @@ internals.validateProperties = (emissaryProperties) => {
   return result.value;
 };
 
-const init = (options) => {
-  internals.log = options.log;
-  const { emissaryProperties, testSessionId } = options;
-  const { validateProperties } = internals;
-  internals.properties = { knownTestsslErrorsWithHelpMessageForBuildUser: internals.knownTestsslErrorsWithHelpMessageForBuildUser, ...validateProperties(emissaryProperties) };
-  internals.reportFilePath = `${getProperties('reportDir')}report_tlsScannerId-${testSessionId}_${strings.NowAsFileName()}`;
-};
-
 const getProperties = (selecter) => {
   const { properties } = internals;
   if (typeof selecter === 'string') return properties[selecter];
@@ -62,7 +54,7 @@ const getProperties = (selecter) => {
 };
 
 const applyReportStyling = async () => {
-  const { log, reportFilePath } = internals;  
+  const { log, reportFilePath } = internals;
 
   const reports = [
     // CSV has no branding, so there is nothing to replace.
@@ -178,10 +170,18 @@ const createProc = ({ tlsScannerSeverity, baseUrl }) => {
   return spawn('./testssl/testssl.sh', ['--ip=one', '--warnings', 'off', '--outFile', reportFilePath, ...(tlsScannerSeverity ? ['--severity', tlsScannerSeverity] : []), baseUrl]);
 };
 
+const init = (options) => {
+  internals.log = options.log;
+  const { emissaryProperties, testSessionId } = options;
+  const { validateProperties } = internals;
+  internals.properties = { knownTestsslErrorsWithHelpMessageForBuildUser: internals.knownTestsslErrorsWithHelpMessageForBuildUser, ...validateProperties(emissaryProperties) };
+  internals.reportFilePath = `${getProperties('reportDir')}report_tlsScannerId-${testSessionId}_${strings.NowAsFileName()}`;
+};
+
 module.exports = {
-  init,
   getProperties,
   applyReportStyling,
   numberOfAlertsForSesh,
-  createProc
+  createProc,
+  init
 };
