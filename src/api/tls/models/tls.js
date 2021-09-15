@@ -26,10 +26,9 @@ const statusMap = {
   'Tls tests are running.': false
 };
 
-let testingProps = null;
-
-
 class Tls {
+  #testingProps
+
   constructor({ log, strings, emissary, cucumber: cucumberConfig, results, publisher, debug }) {
     // Todo: make class fields private.
     this.log = log;
@@ -39,6 +38,7 @@ class Tls {
     this.results = results;
     this.publisher = publisher; // Todo: Remove publisher?
     this.debug = debug;
+    this.#testingProps = null;
     this.status = (state) => {
       if (state) {
         Object.keys(statusMap).forEach((k) => { statusMap[k] = false; });
@@ -86,7 +86,7 @@ class Tls {
     cucCli.on('exit', async (code, signal) => { // Do we need this async?
       const message = `Child process "cucumber Cli" running session with id: "${testingProperties.runableSessionProps.sessionProps.testSession.id}" exited with code: "${code}", and signal: "${signal}".`;
       this.log[`${code === 0 ? 'info' : 'error'}`](message, { tags: ['tls'] });
-      this.status('Awaiting Job.');
+      this.reset();
     });
 
     cucCli.on('close', (code) => {
@@ -96,7 +96,7 @@ class Tls {
 
     cucCli.on('error', (err) => {
       process.stdout.write(`Failed to start cucCli sub-process. The error was: ${err}.`, { tags: ['tls'] });
-      this.status('Awaiting Job.');
+      this.reset();
     });
   }
 
@@ -106,7 +106,7 @@ class Tls {
     this.status('Initialising Tester.');
     const testSession = testJob.included.find((resourceObject) => resourceObject.type === 'tlsScanner');
 
-    testingProps = {
+    this.#testingProps = {
       runableSessionProps: {
         sessionProps: {
           protocol: testJob.data.attributes.sutProtocol,
@@ -120,8 +120,14 @@ class Tls {
     return this.status('Tester initialised.');
   }
 
+  reset() {
+    // Assumption is that cucCli isn't running.
+    this.status('Awaiting Job.');
+    this.#testingProps = null;
+  }
+
   startCucs() {
-    this.#startCuc(testingProps);
+    this.#startCuc(this.#testingProps);
   }
 
   async testPlan(testJob) { // eslint-disable-line no-unused-vars

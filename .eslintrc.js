@@ -19,7 +19,8 @@ module.exports = {
     'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
     'object-curly-newline': ['error', { multiline: true }],
     'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 1 }],
-    'newline-per-chained-call': 'off'
+    'newline-per-chained-call': 'off',
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }]
   },
   env: { node: true },
   parserOptions: { ecmaVersion: 2021 },

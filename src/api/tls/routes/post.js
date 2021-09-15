@@ -40,4 +40,12 @@ module.exports = [{
 
     return respToolkit.response(model.startCucs());
   }
+}, {
+  method: 'POST',
+  path: '/reset-tester',
+  handler: (request, respToolkit) => { // eslint-disable-line no-unused-vars
+    const { model } = request.server.app;
+
+    return respToolkit.response(model.reset());
+  }
 }];

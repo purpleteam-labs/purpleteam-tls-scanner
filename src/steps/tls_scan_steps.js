@@ -73,7 +73,7 @@ Given('the TLS Emissary is run with arguments', async function () {
     const decoder = new StringDecoder('utf8');
     const lineParts = [];
     let printCnt = 0;
-    const headingParts = 7;
+    const headingParts = 6;
 
     const testssl = createProc({ tlsScannerSeverity, baseUrl: this.sut.baseUrl() });
 
