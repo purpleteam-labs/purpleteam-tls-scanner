@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this PurpleTeam project. If not, see <https://www.gnu.org/licenses/>.
 
-const { Tls } = require('./models');
+const Tls = require('./models/tls');
 const routes = require('./routes');
 
 const applyRoutes = (server) => {

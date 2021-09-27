@@ -14,6 +14,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this PurpleTeam project. If not, see <https://www.gnu.org/licenses/>.
 
-const Tls = require('./tls');
+const cuc = require('./tls.cuc');
 
-module.exports = { Tls };
+module.exports = { cuc };

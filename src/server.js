@@ -22,7 +22,6 @@ const tls = require('src/api/tls');
 const host = config.get('host.host');
 const server = Hapi.server({ port: config.get('host.port'), host });
 const log = require('purpleteam-logger').init(config.get('logger'));
-const messagePublisher = require('src/publishers/messagePublisher').init({ log, redis: config.get('redis.clientCreationOptions') });
 const strings = require('src/strings');
 
 const plugins = [
@@ -42,7 +41,6 @@ const plugins = [
       emissary: config.get('emissary'),
       cucumber: config.get('cucumber'),
       results: config.get('results'),
-      publisher: messagePublisher,
       debug: config.get('debug')
     }
   }

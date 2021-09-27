@@ -14,96 +14,58 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this PurpleTeam project. If not, see <https://www.gnu.org/licenses/>.
 
-const { spawn } = require('child_process');
 const { readFile } = require('fs').promises;
 const cucumber = require('@cucumber/cucumber');
 const { GherkinStreams } = require('@cucumber/gherkin-streams');
 
-const statusMap = {
-  'Awaiting Job.': true,
-  'Initialising Tester.': false,
-  'Tester initialised.': false,
-  'Tls tests are running.': false
-};
+const model = require('.');
 
 class Tls {
-  #testingProps
+  #log;
+  #strings;
+  #emissary;
+  #cucumber;
+  #results;
+  #debug;
+  #testingProps;
 
-  constructor({ log, strings, emissary, cucumber: cucumberConfig, results, publisher, debug }) {
-    // Todo: make class fields private.
-    this.log = log;
-    this.strings = strings;
-    this.emissary = emissary;
-    this.cucumber = cucumberConfig;
-    this.results = results;
-    this.publisher = publisher; // Todo: Remove publisher?
-    this.debug = debug;
+  constructor({ log, strings, emissary, cucumber: cucumberConfig, results, debug }) {
+    this.#log = log;
+    this.#strings = strings;
+    this.#emissary = emissary;
+    this.#cucumber = cucumberConfig;
+    this.#results = results;
+    this.#debug = debug;
     this.#testingProps = null;
-    this.status = (state) => {
-      if (state) {
-        Object.keys(statusMap).forEach((k) => { statusMap[k] = false; });
-        statusMap[state] = true;
-        this.log.info(`Setting status to: "${state}"`, { tags: ['tls'] });
-        return state;
-      }
-      return Object.entries(statusMap).find((e) => e[1] === true)[0];
-    };
   }
 
-  #startCuc(testingProperties) {
-    const { debug: { execArgvDebugString, firstChildProcessInspectPort } } = this;
-    const cucumberArgs = this.createCucumberArgs(testingProperties.runableSessionProps);
+  #statusMap = {
+    'Awaiting Job.': true,
+    'Initialising Tester.': false,
+    'Tester initialised.': false,
+    'Tls tests are running.': false
+  };
 
-    // runableSessionProps: {
-    //   sessionProps: {
-    //     protocol: "http",
-    //     ip: "pt-sut-cont",
-    //     port: 4000,
-    //     testSession: {
-    //       type: "tlsScanner",
-    //       id: "NA",
-    //       attributes: {
-    //         alertThreshold: 12,
-    //       },
-    //     }
-    //   }
-    // }
+  #status(state) {
+    if (state) {
+      Object.keys(this.#statusMap).forEach((k) => { this.#statusMap[k] = false; });
+      this.#statusMap[state] = true;
+      this.#log.info(`Setting status to: "${state}"`, { tags: ['tls'] });
+      return state;
+    }
+    return Object.entries(this.#statusMap).find((e) => e[1] === true)[0];
+  }
 
-    if (this.status() === 'Tls tests are running.') return;
-
-    const cucCli = spawn('node', [...(execArgvDebugString ? [`${execArgvDebugString}:${firstChildProcessInspectPort}`] : []), ...cucumberArgs], { cwd: process.cwd(), env: process.env, argv0: process.argv[0] });
-    this.log.notice(`cucCli process with PID "${cucCli.pid}" has been spawned for Test Session with Id "${testingProperties.runableSessionProps.sessionProps.testSession.id}"`, { tags: ['tls'] });
-    this.status('Tls tests are running.');
-
-    cucCli.stdout.on('data', (data) => {
-      process.stdout.write(data); // Todo: Check these, can they use log?
-    });
-
-    cucCli.stderr.on('data', (data) => {
-      process.stdout.write(data); // Todo: Check these, can they use log?
-    });
-
-    cucCli.on('exit', async (code, signal) => { // Do we need this async?
-      const message = `Child process "cucumber Cli" running session with id: "${testingProperties.runableSessionProps.sessionProps.testSession.id}" exited with code: "${code}", and signal: "${signal}".`;
-      this.log[`${code === 0 ? 'info' : 'error'}`](message, { tags: ['tls'] });
-      this.reset();
-    });
-
-    cucCli.on('close', (code) => {
-      const message = `"close" event was emitted with code: "${code}" for "cucumber Cli" running session with id "${testingProperties.runableSessionProps.sessionProps.testSession.id}".`;
-      this.log[`${code === 0 ? 'info' : 'error'}`](message, { tags: ['tls'] });
-    });
-
-    cucCli.on('error', (err) => {
-      process.stdout.write(`Failed to start cucCli sub-process. The error was: ${err}.`, { tags: ['tls'] });
-      this.reset();
-    });
+  reset() {
+    // Assumption is that cucCli isn't running.
+    this.#status('Awaiting Job.');
+    this.#testingProps = null;
   }
 
   async initTester(testJob) {
-    this.log.info(`Status currently set to: "${this.status()}"`, { tags: ['tls'] });
-    if (this.status() !== 'Awaiting Job.') return this.status();
-    this.status('Initialising Tester.');
+    this.#log.info(`Status currently set to: "${this.#status()}"`, { tags: ['tls'] });
+    if (this.#status() !== 'Awaiting Job.') return this.#status();
+    this.#status('Initialising Tester.');
     const testSession = testJob.included.find((resourceObject) => resourceObject.type === 'tlsScanner');
 
     this.#testingProps = {
@@ -117,21 +79,28 @@ class Tls {
       }
     };
 
-    return this.status('Tester initialised.');
-  }
-
-  reset() {
-    // Assumption is that cucCli isn't running.
-    this.status('Awaiting Job.');
-    this.#testingProps = null;
+    return this.#status('Tester initialised.');
   }
 
   startCucs() {
-    this.#startCuc(this.#testingProps);
+    model.cuc.startCuc({
+      reset: this.reset,
+      app: {
+        log: this.#log,
+        status: this.#status,
+        testSessionId: this.#testingProps.runableSessionProps.sessionProps.testSession.id,
+        cucumberArgs: this.#createCucumberArgs(this.#testingProps.runableSessionProps),
+        debug: {
+          execArgvDebugString: this.#debug.execArgvDebugString,
+          firstChildProcessInspectPort: this.#debug.firstChildProcessInspectPort
+        }
+      },
+      appInstance: this
+    });
   }
 
   async testPlan(testJob) { // eslint-disable-line no-unused-vars
-    const cucumberArgs = this.createCucumberArgs({});
+    const cucumberArgs = this.#createCucumberArgs({});
     const cucumberCliInstance = new cucumber.Cli({
       argv: ['node', ...cucumberArgs],
       cwd: process.cwd(),
@@ -142,31 +111,31 @@ class Tls {
     return testPlanText;
   }
 
-  createCucumberArgs({ sessionProps = {} }) {
-    const emissaryProperties = { reportDir: this.emissary.report.dir };
+  #createCucumberArgs({ sessionProps = {} }) {
+    const emissaryProperties = { reportDir: this.#emissary.report.dir };
 
     const cucumberParameters = {
       emissaryProperties,
       sutProperties: sessionProps,
-      cucumber: { timeout: this.cucumber.timeout }
+      cucumber: { timeout: this.#cucumber.timeout }
     };
 
     const parameters = JSON.stringify(cucumberParameters);
 
-    this.log.debug(`The cucumberParameters are: ${parameters}`, { tags: ['tls'] });
+    this.#log.debug(`The cucumberParameters are: ${parameters}`, { tags: ['tls'] });
 
     const cucumberArgs = [
-      this.cucumber.binary,
-      this.cucumber.features,
+      this.#cucumber.binary,
+      this.#cucumber.features,
       '--require',
-      this.cucumber.steps,
+      this.#cucumber.steps,
       /* '--exit', */
-      `--format=message:${this.results.dir}result_tlsScannerId-${sessionProps.testSession ? sessionProps.testSession.id : 'noSessionPropsAvailable'}_${this.strings.NowAsFileName('-')}.NDJSON`,
+      `--format=message:${this.#results.dir}result_tlsScannerId-${sessionProps.testSession ? sessionProps.testSession.id : 'noSessionPropsAvailable'}_${this.#strings.NowAsFileName('-')}.NDJSON`,
       /* Todo: Provide ability for Build User to pass flag to disable colours */
       '--format-options',
       '{"colorsEnabled": true}',
       '--tags',
-      this.cucumber.tagExpression,
+      this.#cucumber.tagExpression,
       '--world-parameters',
       parameters
     ];
