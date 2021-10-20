@@ -83,20 +83,24 @@ class Tls {
   }
 
   startCucs() {
-    model.cuc.startCuc({
-      reset: this.reset,
-      app: {
-        log: this.#log,
-        status: this.#status,
-        testSessionId: this.#testingProps.runableSessionProps.sessionProps.testSession.id,
-        cucumberArgs: this.#createCucumberArgs(this.#testingProps.runableSessionProps),
-        debug: {
-          execArgvDebugString: this.#debug.execArgvDebugString,
-          firstChildProcessInspectPort: this.#debug.firstChildProcessInspectPort
-        }
-      },
-      appInstance: this
-    });
+    if (this.#testingProps) {
+      model.cuc.startCuc({
+        reset: this.reset,
+        app: {
+          log: this.#log,
+          status: this.#status,
+          testSessionId: this.#testingProps.runableSessionProps.sessionProps.testSession.id,
+          cucumberArgs: this.#createCucumberArgs(this.#testingProps.runableSessionProps),
+          debug: {
+            execArgvDebugString: this.#debug.execArgvDebugString,
+            firstChildProcessInspectPort: this.#debug.firstChildProcessInspectPort
+          }
+        },
+        appInstance: this
+      });
+    } else {
+      this.#log.error('this.#testingProps was falsy. It appears that the Tester was reset between calling initTester and startCucs', { tags: ['tls'] });
+    }
   }
 
   async testPlan(testJob) { // eslint-disable-line no-unused-vars
