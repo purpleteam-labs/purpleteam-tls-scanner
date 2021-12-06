@@ -35,7 +35,7 @@ internals.sutSchema = Joi.object({
     id: Joi.string().alphanum().required(),
     attributes: Joi.object({
       tlsScannerSeverity: Joi.string().valid(...internals.configSchemaProps.sut._cvtProperties.tlsScannerSeverity.format).uppercase(), // eslint-disable-line no-underscore-dangle
-      alertThreshold: Joi.number().integer().min(0).max(1000).default(config.get('sut.alertThreshold'))
+      alertThreshold: Joi.number().integer().min(0).max(9999).default(config.get('sut.alertThreshold'))
     })
   })
 });
