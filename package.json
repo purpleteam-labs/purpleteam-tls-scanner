@@ -53,7 +53,7 @@
     "web security"
   ],
   "author": "Kim Carter",
-  "license": "AGPL-3.0-only",
+  "license": "BSL",
   "bugs": {
     "url": "https://github.com/purpleteam-labs/purpleteam/issues"
   },
@@ -90,6 +90,8 @@
     "bin",
     "config/config.js",
     "config/config.example.json",
-    "src"
+    "src",
+    "LEGALNOTICE.md",
+    "licenses"
   ]
 }
