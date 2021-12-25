@@ -160,7 +160,7 @@ const numberOfAlertsForSesh = async () => {
 
 const createProc = ({ tlsScannerSeverity, baseUrl }) => {
   const { reportFilePath } = internals;
-  return spawn('./testssl/testssl.sh', ['--ip=one', '--warnings', 'off', '--outFile', reportFilePath, ...(tlsScannerSeverity ? ['--severity', tlsScannerSeverity] : []), baseUrl]);
+  return spawn('./testssl/testssl.sh', ['--ip=one', '--warnings', 'off', '--color', 3, '--outFile', reportFilePath, ...(tlsScannerSeverity ? ['--severity', tlsScannerSeverity] : []), baseUrl]);
 };
 
 const init = (options) => {
