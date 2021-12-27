@@ -1,6 +1,6 @@
 {
   "name": "purpleteam-tls-scanner",
-  "version": "1.1.0-alpha.3",
+  "version": "3.1.0-alpha.3",
   "description": "TLS scanning component of purpleteam -- security regression testing SaaS",
   "main": "index.js",
   "bin": {
