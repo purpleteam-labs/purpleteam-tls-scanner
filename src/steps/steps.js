@@ -8,8 +8,8 @@
 // by the Apache License, Version 2.0
 
 // features/support/steps.js
-const { Given, When, Then } = require('@cucumber/cucumber');
-const assert = require('assert');
+import { Given, When, Then } from '@cucumber/cucumber';
+import assert from 'assert';
 
 // Cucumber expects a non arrow function in order for the this to refer to the world.
 /* eslint-disable func-names */

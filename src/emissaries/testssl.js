@@ -7,13 +7,12 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const Joi = require('joi');
-const { promises: fsPromises } = require('fs');
-const { spawn } = require('child_process');
-const Bourne = require('@hapi/bourne');
-
-const config = require(`${process.cwd()}/config/config`); // eslint-disable-line import/no-dynamic-require
-const strings = require(`${process.cwd()}/src/strings`); // eslint-disable-line import/no-dynamic-require
+import Joi from 'joi';
+import { promises as fsPromises } from 'fs';
+import { spawn } from 'child_process';
+import Bourne from '@hapi/bourne';
+import config from '../../config/config.js';
+import { NowAsFileName } from '../strings/index.js';
 
 const internals = {
   testsslSchema: Joi.object({ reportDir: Joi.string().required().valid(config.get('emissary.report.dir')) }),
@@ -168,10 +167,10 @@ const init = (options) => {
   const { emissaryProperties, testSessionId } = options;
   const { validateProperties } = internals;
   internals.properties = { knownTestsslErrorsWithHelpMessageForBuildUser: internals.knownTestsslErrorsWithHelpMessageForBuildUser, ...validateProperties(emissaryProperties) };
-  internals.reportFilePath = `${getProperties('reportDir')}report_tlsScannerId-${testSessionId}_${strings.NowAsFileName()}`;
+  internals.reportFilePath = `${getProperties('reportDir')}report_tlsScannerId-${testSessionId}_${NowAsFileName()}`;
 };
 
-module.exports = {
+export default {
   getProperties,
   applyReportStyling,
   numberOfAlertsForSesh,

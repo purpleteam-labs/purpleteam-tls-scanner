@@ -7,6 +7,6 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const cuc = require('./tls.cuc');
+import cuc from './tls.cuc.js';
 
-module.exports = { cuc };
+export default { cuc };

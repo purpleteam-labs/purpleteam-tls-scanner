@@ -7,15 +7,15 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const Hapi = require('@hapi/hapi');
-const config = require('config/config');
-const { hapiEventHandler } = require('src/plugins/');
-const tls = require('src/api/tls');
+import Hapi from '@hapi/hapi';
+import { init as initPtLogger } from 'purpleteam-logger';
+import config from '../config/config.js';
+import { hapiEventHandler } from './plugins/index.js';
+import tls from './api/tls/index.js';
+import strings from './strings/index.js';
 
-const host = config.get('host.host');
-const server = Hapi.server({ port: config.get('host.port'), host });
-const log = require('purpleteam-logger').init(config.get('logger'));
-const strings = require('src/strings');
+const log = initPtLogger(config.get('logger'));
+const server = Hapi.server({ port: config.get('host.port'), host: config.get('host.host') });
 
 const plugins = [
   {
@@ -39,8 +39,7 @@ const plugins = [
   }
 ];
 
-module.exports = {
-
+export default {
   registerPlugins: async () => {
     // Todo: KC: Add host header as `vhost` to the routes of the optional options object passed to `server.register`.
     // https://hapijs.com/tutorials/plugins#user-content-registration-options
@@ -52,5 +51,4 @@ module.exports = {
     log.info('Server started.', { tags: ['startup'] });
     return server;
   }
-
 };

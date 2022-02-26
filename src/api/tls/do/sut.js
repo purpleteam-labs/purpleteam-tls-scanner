@@ -7,11 +7,8 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const Joi = require('joi');
-
-/* eslint-disable import/no-dynamic-require */
-const config = require(`${process.cwd()}/config/config`);
-/* eslint-enable import/no-dynamic-require */
+import Joi from 'joi';
+import config from '../../../../config/config.js';
 
 const internals = {
   configSchemaProps: config.getSchema()._cvtProperties, // eslint-disable-line no-underscore-dangle
@@ -58,7 +55,7 @@ const getProperties = (selecter) => {
   return properties;
 };
 
-module.exports = {
+export default {
   init,
   getProperties,
   baseUrl: () => `${internals.properties.protocol}://${internals.properties.ip}${{ http: 80, https: 443 }[internals.properties.protocol] === internals.properties.port ? '' : `:${internals.properties.port}`}`

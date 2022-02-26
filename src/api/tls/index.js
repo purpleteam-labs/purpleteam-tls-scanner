@@ -7,15 +7,15 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const Tls = require('./models/tls');
-const routes = require('./routes');
+import Tls from './models/tls.js';
+import routes from './routes/index.js';
 
 const applyRoutes = (server) => {
   // Plugin with multiple routes.
   server.route(routes);
 };
 
-module.exports = {
+export default {
   name: 'tlsDomainPlugin',
   version: '1.0.0',
   register: async (server, options) => {

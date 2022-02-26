@@ -7,7 +7,7 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const { spawn } = require('child_process');
+import { spawn } from 'child_process';
 
 const internals = {};
 
@@ -43,4 +43,4 @@ internals.runTestSession = ({ reset, app: { log, status, testSessionId, cucumber
   });
 };
 
-module.exports = { startCuc: (parameters) => { internals.runTestSession(parameters); } };
+export default { startCuc: (parameters) => { internals.runTestSession(parameters); } };

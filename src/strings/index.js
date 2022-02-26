@@ -15,4 +15,5 @@ const NowAsFileName = (hourMinuteSecondSeperator = ':') => {
   return `${date.getFullYear()}-${padLeft(date.getMonth() + 1)}-${padLeft(date.getDate())}T${padLeft(date.getHours())}${hourMinuteSecondSeperator}${padLeft(date.getMinutes())}${hourMinuteSecondSeperator}${padLeft(date.getSeconds())}`;
 };
 
-module.exports = { NowAsFileName };
+export default { NowAsFileName };
+export { NowAsFileName };

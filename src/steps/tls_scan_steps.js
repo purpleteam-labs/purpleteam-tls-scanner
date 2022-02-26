@@ -7,8 +7,8 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const { /* Before, */ Given, /* When, */ Then /* , After */ } = require('@cucumber/cucumber');
-const { StringDecoder } = require('string_decoder');
+import { /* Before, */ Given, /* When, */ Then /* , After */ } from '@cucumber/cucumber';
+import { StringDecoder } from 'string_decoder';
 
 const internals = { emissaryInProgressIntervalId: null };
 

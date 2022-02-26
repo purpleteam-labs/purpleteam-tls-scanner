@@ -7,9 +7,9 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const test = require('ava');
+import test from 'ava';
 
-test('Populate me', async (t) => {
+test('Populate me', (t) => {
   t.plan(1);
   t.deepEqual({}, {});
 });

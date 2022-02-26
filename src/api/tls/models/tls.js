@@ -7,11 +7,12 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const { readFile } = require('fs').promises;
-const cucumber = require('@cucumber/cucumber');
-const { GherkinStreams } = require('@cucumber/gherkin-streams');
+import { Cli as CucCli, PickleFilter } from '@cucumber/cucumber';
+import { GherkinStreams } from '@cucumber/gherkin-streams';
+import { promises as fsPromises } from 'fs';
+import model from './index.js';
 
-const model = require('.');
+const { readFile } = fsPromises;
 
 class Tls {
   #log;
@@ -98,7 +99,7 @@ class Tls {
 
   async testPlan(testJob) { // eslint-disable-line no-unused-vars
     const cucumberArgs = this.#createCucumberArgs({});
-    const cucumberCliInstance = new cucumber.Cli({
+    const cucumberCliInstance = new CucCli({
       argv: ['node', ...cucumberArgs],
       cwd: process.cwd(),
       stdout: process.stdout
@@ -144,7 +145,7 @@ class Tls {
   // eslint-disable-next-line class-methods-use-this
   async #getActiveFeatureFileUris(cucumberCli) {
     const configuration = await cucumberCli.getConfiguration();
-    const pickleFilter = (() => new (require('@cucumber/cucumber/lib/pickle_filter')).default(configuration.pickleFilterOptions))(); // eslint-disable-line global-require, new-cap
+    const pickleFilter = (() => new PickleFilter(configuration.pickleFilterOptions))();
 
     const streamToArray = async (readableStream) => new Promise((resolve, reject) => {
       const items = [];
@@ -183,4 +184,4 @@ class Tls {
   }
 }
 
-module.exports = Tls;
+export default Tls;

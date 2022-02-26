@@ -7,16 +7,16 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const config = require(`${process.cwd()}/config/config`); // eslint-disable-line import/no-dynamic-require
-const log = require('purpleteam-logger').init(config.get('logger'));
+import { setWorldConstructor, setDefaultTimeout } from '@cucumber/cucumber';
+import { init as initPtLogger } from 'purpleteam-logger';
+import config from '../../config/config.js';
+import { init as initMessagePublisher } from '../publishers/messagePublisher.js';
+import sut from '../api/tls/do/sut.js';
+import testssl from '../emissaries/testssl.js';
 
 const messageChannelHeartBeatInterval = config.get('messageChannelHeartBeatInterval');
-const messagePublisher = require(`${process.cwd()}/src/publishers/messagePublisher`).init({ log, redis: config.get('redis.clientCreationOptions') }); // eslint-disable-line import/no-dynamic-require
-// features/support/world.js
-const { setWorldConstructor, setDefaultTimeout } = require('@cucumber/cucumber');
-
-const sut = require(`${process.cwd()}/src/api/tls/do/sut`); // eslint-disable-line import/no-dynamic-require
-const testssl = require(`${process.cwd()}/src/emissaries/testssl`); // eslint-disable-line import/no-dynamic-require
+const log = initPtLogger(config.get('logger'));
+const messagePublisher = await initMessagePublisher({ log, redis: config.get('redis.clientCreationOptions') });
 
 let timeout;
 
