@@ -7,16 +7,14 @@
 # the Business Source License, use of this software will be governed
 # by the Apache License, Version 2.0
 
-FROM node:16-alpine
+FROM node:17-alpine
 
 ARG LOCAL_USER_ID
 ARG LOCAL_GROUP_ID
 
 # Create an environment variable in our image for the non-root user we want to use.
 # ENV USER 1000
-ENV USER tls_scanner
-ENV GROUP purpleteam
-ENV TESTSSL_VERSION v3.0.6
+ENV USER=tls_scanner GROUP=purpleteam TESTSSL_VERSION=v3.0.6
 RUN echo user is: ${USER}, LOCAL_USER_ID is: ${LOCAL_USER_ID}, group is: ${GROUP}, LOCAL_GROUP_ID is: ${LOCAL_GROUP_ID}
 
 # Following taken from: https://github.com/mhart/alpine-node/issues/48#issuecomment-430902787
@@ -61,16 +59,18 @@ RUN curl -sSL https://github.com/drwetter/testssl.sh/archive/refs/tags/${TESTSSL
     rm testssl.sh-${TESTSSL_VERSION}.tar.gz    
     # ln -s ${WORKDIR}testssl/ /usr/local/bin/testssl/
 
-ENV PATH="${WORKDIR}testssl:${PATH}"
+ENV PATH="/usr/src/app/testssl:${PATH}"
+
+RUN chown $USER:$GROUP --recursive /usr/src/app/
 
 # For npm@5 or later, copy the automatically generated package-lock.json instead.
-COPY package*.json $WORKDIR
+COPY package*.json /usr/src/app/
 
-RUN cd $WORKDIR && npm install
+RUN npm install
 
 # String expansion doesn't work currently: https://github.com/moby/moby/issues/35018
 # COPY --chown=${USER}:GROUP . $WORKDIR
-COPY --chown=tls_scanner:purpleteam . $WORKDIR
+COPY --chown=tls_scanner:purpleteam . /usr/src/app/
 
 # Here I used to chown and chmod as shown here: http://f1.holisticinfosecforwebdevelopers.com/chap03.html#vps-countermeasures-docker-the-default-user-is-root
 # Problem is, each of these commands creates another layer of all the files modified and thus adds over 100MB to the image: https://www.datawire.io/not-engineer-running-3-5gb-docker-images/
