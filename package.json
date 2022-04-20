@@ -64,7 +64,7 @@
     "@hapi/bourne": "^2.0.0",
     "@hapi/hapi": "^20.1.5",
     "app-module-path": "^2.2.0",
-    "convict": "^6.1.0",
+    "convict": "^6.2.2",
     "convict-format-with-moment": "^6.0.1",
     "joi": "^17.4.0",
     "purpleteam-logger": "^1.1.2",
