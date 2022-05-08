@@ -17,11 +17,13 @@ ARG LOCAL_GROUP_ID
 ENV USER tls_scanner
 ENV GROUP purpleteam
 ENV TESTSSL_VERSION v3.0.6
+# Hack to get around cucumber's dependency change: https://github.com/cucumber/cucumber-js/issues/2011
+ENV FORCE_COLOR 1
 RUN echo user is: ${USER}, LOCAL_USER_ID is: ${LOCAL_USER_ID}, group is: ${GROUP}, LOCAL_GROUP_ID is: ${LOCAL_GROUP_ID}
 
 # Following taken from: https://github.com/mhart/alpine-node/issues/48#issuecomment-430902787
 RUN apk add --no-cache shadow && \
-    apk add --no-cache bash procps drill git coreutils libidn curl socat openssl xxd && \
+    apk add --no-cache bash procps drill coreutils libidn curl socat openssl xxd && \
     if [ -z "`getent group $LOCAL_GROUP_ID`" ]; then \
       addgroup -S -g $LOCAL_GROUP_ID $GROUP; \
     else \
