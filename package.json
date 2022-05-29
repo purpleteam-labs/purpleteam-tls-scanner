@@ -68,7 +68,7 @@
   },
   "homepage": "https://purpleteam-labs.com",
   "dependencies": {
-    "@cucumber/cucumber": "^8.0.0-rc.3",
+    "@cucumber/cucumber": "^8.2.1",
     "@hapi/bourne": "^2.0.0",
     "@hapi/hapi": "^20.2.1",
     "convict": "^6.2.1",
