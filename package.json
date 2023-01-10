@@ -71,7 +71,7 @@
     "@cucumber/cucumber": "^8.2.1",
     "@hapi/bourne": "^2.0.0",
     "@hapi/hapi": "^20.2.1",
-    "convict": "^6.2.1",
+    "convict": "^6.2.4",
     "convict-format-with-moment": "^6.2.0",
     "joi": "^17.6.0",
     "purpleteam-logger": "^2.0.0",
